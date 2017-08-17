@@ -4,7 +4,8 @@ from .models import Post
 
 # Register your models here.
 
-# This class will tweek how the Post will be displayed in admin (when in a list of all Posts)
+# This class will tweek how the Post will be displayed in the admin site
+# when in a list of all the Posts or when adding/editing a new one
 class PostAdmin(admin.ModelAdmin):
     # the default is a to show just the Post.__str__() value
     # but we can change it with
