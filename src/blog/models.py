@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Create your models here.
 
@@ -29,7 +30,8 @@ class Post(models.Model):
     published = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default='draft')
 
     # if we add a custom query Manager and want to use the default
     # Post.objects.all().filter()... one we have to add it explicitly
@@ -44,3 +46,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    # a convention method
+    def get_absolute_url(self):
+        return reverse('blog:post_detail', args=[self.published.year,
+                                                 self.published.strftime('%m'),
+                                                 self.published.strftime('%d'),
+                                                 self.slug])
