@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
-from django.urls import reverse
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 
@@ -49,7 +49,11 @@ class Post(models.Model):
 
     # a convention method
     def get_absolute_url(self):
+        # url is set to be:
+        # url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/(?P<slug>[-\w]+)/$',
+        #          views.post_detail, name='post_detail')
+        # so to reverse it we have to set 4 parameters
         return reverse('blog:post_detail', args=[self.published.year,
-                                                 self.published.strftime('%m'),
-                                                 self.published.strftime('%d'),
-                                                 self.slug])
+                                                self.published.strftime('%m'),
+                                                self.published.strftime('%d'),
+                                                self.slug])

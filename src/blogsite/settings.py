@@ -57,7 +57,10 @@ ROOT_URLCONF = 'blogsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # this will allow templates to be searched in the specified dirs also
+        # and so we can overwite the "admin" templates in it
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # this will allow a 'templates/.../' folder inside each installed app
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,3 +124,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# In addition to using a static/ directory inside your apps,
+# you can define a list of directories (STATICFILES_DIRS)
+# where Django will also look for static files. 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+# in this folder will be collected all static files
+# when "$ python manage.py collectstatic" script is run
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

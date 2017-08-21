@@ -1,1 +1,16 @@
-list
+{% extends "../_layout.html" %}
+
+{% block title %}Posts{% endblock %}
+
+{% block content %}
+    <h1>Posts</h1>
+    {% for post in posts %}
+        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <p class="date">Published {{ post.published }} by {{ post.author }}</p>
+        {{ post.body|truncatewords:30|linebreaks }}
+    {% endfor %}
+    
+    <!--  pass the posts as the 'page' object for '_pagination.html' -->
+    {% include "../_pagination.html" with page=posts %}
+    
+{% endblock %}
