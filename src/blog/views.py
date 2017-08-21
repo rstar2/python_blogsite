@@ -32,3 +32,7 @@ def post_detail(request, year, month, day, slug):
                              published__month=month,
                              published__day=day)
     return render(request, 'blog/post/detail.html', {'post': post})
+
+
+def post_share_by_email(request, post_id):
+    pass 
