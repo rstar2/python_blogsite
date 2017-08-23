@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.mail import send_mail
 from .models import Post
+from .forms import EmailPostForm
 
 
 # Create your views here.
@@ -34,5 +36,36 @@ def post_detail(request, year, month, day, slug):
     return render(request, 'blog/post/detail.html', {'post': post})
 
 
-def post_share_by_email(request, post_id):
-    pass 
+def post_share(request, post_id):
+    # retrieve the specified post
+    post = get_object_or_404(Post, id=post_id, status='published')
+    sent = False
+
+    if request.method == 'POST':
+        # so this is when form is submitted (on POST)
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            # so the form is valid
+
+            # clean the form's data
+            cd = form.cleaned_data
+            post_url = request.build_absolute_uri(post.get_absolute_url())
+
+            subject = '{} ({}) recommends you reading "{}"'.format(cd['name'],
+                                                                   cd['email'],
+                                                                   post.title)
+            message = 'Read "{}" at {}\n\n{}\'s comments: {}'.format(post.title,
+                                                                     post_url,
+                                                                     cd['name'],
+                                                                     cd['comments'])
+            # real sending of the email
+            send_mail(subject, message, 'admin@blogsite.com', [cd['to']])
+
+            sent = True
+    else:
+        # this is when form is to be displayed (on GET)
+        form = EmailPostForm()
+
+    return render(request, 'blog/post/share.html', {'form': form,
+                                                   'post': post,
+                                                   'sent': sent})
