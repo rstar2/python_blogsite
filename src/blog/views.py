@@ -5,8 +5,6 @@ from .models import Post
 from .forms import EmailPostForm
 
 
-# Create your views here.
-
 def post_list(request):
     posts_all = Post.status_published.all()
 

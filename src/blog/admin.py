@@ -1,8 +1,7 @@
 from django.contrib import admin
 
-from .models import Post
+from .models import Post, Comment
 
-# Register your models here.
 
 # This class will tweek how the Post will be displayed in the admin site
 # when in a list of all the Posts or when adding/editing a new one
@@ -21,4 +20,12 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ('status', 'published', 'slug')
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'post', 'created', 'active')
+    list_filter = ('active', 'created', 'updated')
+    search_fields = ('name', 'email', 'body')
+
+
+# register all admin models
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment, CommentAdmin)
