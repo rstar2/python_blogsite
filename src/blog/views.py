@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
-from .models import Post
-from .forms import EmailPostForm
+from .models import Post, Comment
+from .forms import EmailPostForm, CommentForm
 
 
 def post_list(request):
@@ -31,7 +31,29 @@ def post_detail(request, year, month, day, slug):
                              published__year=year,
                              published__month=month,
                              published__day=day)
-    return render(request, 'blog/post/detail.html', {'post': post})
+
+    # get the cmments for this post
+    comments = post.comments.filter(active=True)
+    
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            # create a Comment object from the form BUT DON'T SAVE it to the database yet
+            new_comment = comment_form.save(commit=False)
+            # assign the Post associated with this Comment
+            new_comment.post = post
+            # save/commit to the database now
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+
+    # whether or not a comment was saved
+    new_comment_saved = 'new_comment' in locals()
+    
+    return render(request, 'blog/post/detail.html', {'post': post,
+                                                     'comments': comments,
+                                                     'comment_form': comment_form,
+                                                     'new_comment_saved': new_comment_saved})
 
 
 def post_share(request, post_id):
@@ -65,5 +87,5 @@ def post_share(request, post_id):
         form = EmailPostForm()
 
     return render(request, 'blog/post/share.html', {'form': form,
-                                                   'post': post,
-                                                   'sent': sent})
+                                                    'post': post,
+                                                    'sent': sent})

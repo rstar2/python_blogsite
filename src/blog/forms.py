@@ -13,7 +13,7 @@ class EmailPostForm(forms.Form):
 
 
 # a form specifically for a model (in this case Comment)
-class CommentForm(forms.Form):
+class CommentForm(forms.ModelForm):
     class Meta:
         # specify the assofiated model
         model = Comment

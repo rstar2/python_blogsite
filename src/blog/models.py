@@ -52,20 +52,23 @@ class Post(models.Model):
         #          views.post_detail, name='post_detail')
         # so to reverse it we have to set 4 parameters
         return reverse('blog:post_detail', args=[self.published.year,
-                                                self.published.strftime('%m'),
-                                                self.published.strftime('%d'),
-                                                self.slug])
+                                                 self.published.strftime('%m'),
+                                                 self.published.strftime('%d'),
+                                                 self.slug])
 
 
 class Comment(models.Model):
     class Meta:
         ordering = ('created',)
 
-    # related_name 'comments' means that we can use
-    # Post.comments.all() - e.g a named related manager
+    # 1. related_name 'comments' means that we can use
+    # post.comments.all() - e.g a named related manager
     # if don't name it Django will implicitly set it to: 'comment_set', so
-    # Post.comment_set.all()
-    post = models.ForeignKey(Post, related_name='comments')
+    # post.comment_set.all()
+    # 2. related_query_name 'comment' means we can use it in filter fields like so
+    # Post.objects.filter(comment__active=True)
+    post = models.ForeignKey(Post, related_name='comments',
+                             related_query_name='comment')
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
@@ -75,4 +78,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Comment by {} on "{}"'.format(self.name, self.post)
-
