@@ -3,9 +3,12 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    # name="blog_list" -> name of the URL to be used in HTML templates for instance
+    # name="blog_list" -> name of the URL to be used in HTML templates
     url(r'^$', views.post_list, name="post_list"),
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/(?P<slug>[-\w]+)/$',
         views.post_detail, name='post_detail'),
     url(r'^(?P<post_id>\d+)/share/', views.post_share, name="post_share"),
+
+    # we'll use the same 'views.post_list' but with additional "tag_slug" argument
+    url(r'^tag/(?P<tag_slug>\w+)$', views.post_list, name="post_list_by_tag"),
 ]

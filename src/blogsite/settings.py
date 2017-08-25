@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Added by me
+    # Django-taggit app
+    'taggit',
+
+    # Our local django-app
     'blog',
 ]
 

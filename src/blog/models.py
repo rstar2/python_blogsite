@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from taggit.managers import TaggableManager
 
 
 class PublishedManager(models.Manager):
@@ -41,6 +42,10 @@ class Post(models.Model):
     # thus we can use Post.status_published.all().filter()....
     # Also we can use Post.status_published.from_rumen()
     status_published = PublishedManager()
+
+    # add the taggit manager, so now we can use Post.tags.all() (which is as if Tag.objects.all())
+    # or for a specific Post - post.tags.all(), post.tags.add('music', 'sports')
+    tags = TaggableManager()
 
     def __str__(self):
         return self.title
