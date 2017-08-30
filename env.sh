@@ -1,7 +1,6 @@
 #! /bin/bash
 
-if [ "$1" == 'install' ]
-then
+if [ "$1" = 'install' ]; then
     # if this is the first time 
     # install the Virtual environment,
     # activate it and install needed Python packages
@@ -11,8 +10,7 @@ then
 else
     # if this is normal day work - activate the environment and open VSCodess
     source env/bin/activate
-    if [ "$1" == "code" ]
-    then
+    if [ "$1" = "code" ];  then
         code .
     fi
 fi

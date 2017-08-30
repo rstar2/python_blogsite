@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.mail import send_mail
+from django.db.models import Count
 from taggit.models import Tag
-from .models import Post, Comment
+from .models import Post
 from .forms import EmailPostForm, CommentForm
 
 
@@ -35,63 +36,71 @@ def post_list(request, tag_slug=None):
 
 def post_detail(request, year, month, day, slug):
     post = get_object_or_404(Post, status='published', slug=slug,
-                             published__year = year,
-                             published__month = month,
-                             published__day = day)
+                             published__year=year,
+                             published__month=month,
+                             published__day=day)
 
     # get the cmments for this post
-    comments=post.comments.filter(active = True)
+    comments = post.comments.filter(active=True)
 
     if request.method == 'POST':
-        comment_form=CommentForm(request.POST)
+        comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             # create a Comment object from the form BUT DON'T SAVE it to the database yet
-            new_comment=comment_form.save(commit = False)
+            new_comment = comment_form.save(commit=False)
             # assign the Post associated with this Comment
-            new_comment.post=post
+            new_comment.post = post
             # save/commit to the database now
             new_comment.save()
     else:
-        comment_form=CommentForm()
+        comment_form = CommentForm()
 
     # whether or not a comment was saved
-    new_comment_saved='new_comment' in locals()
+    new_comment_saved = 'new_comment' in locals()
+
+    # Get list with "similar" posts
+    post_tags_id = post.tags.values_list('id', flat=True)
+    similar_posts = Post.status_published.filter(tags__in=post_tags_id). \
+        exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')). \
+        order_by('-same_tags', '-published')[:4]
 
     return render(request, 'blog/post/detail.html', {'post': post,
                                                      'comments': comments,
                                                      'comment_form': comment_form,
-                                                     'new_comment_saved': new_comment_saved})
+                                                     'new_comment_saved': new_comment_saved,
+                                                     'similar_posts': similar_posts})
 
 
 def post_share(request, post_id):
     # retrieve the specified post
-    post=get_object_or_404(Post, id = post_id, status = 'published')
-    sent=False
+    post = get_object_or_404(Post, id=post_id, status='published')
+    sent = False
 
     if request.method == 'POST':
         # so this is when form is submitted (on POST)
-        form=EmailPostForm(request.POST)
+        form = EmailPostForm(request.POST)
         if form.is_valid():
             # so the form is valid
 
             # clean the form's data
-            cd=form.cleaned_data
-            post_url=request.build_absolute_uri(post.get_absolute_url())
+            cd = form.cleaned_data
+            post_url = request.build_absolute_uri(post.get_absolute_url())
 
-            subject='{} ({}) recommends you reading "{}"'.format(cd['name'],
+            subject = '{} ({}) recommends you reading "{}"'.format(cd['name'],
                                                                    cd['email'],
                                                                    post.title)
-            message='Read "{}" at {}\n\n{}\'s comments: {}'.format(post.title,
+            message = 'Read "{}" at {}\n\n{}\'s comments: {}'.format(post.title,
                                                                      post_url,
                                                                      cd['name'],
                                                                      cd['comments'])
             # real sending of the email
             send_mail(subject, message, 'admin@blogsite.com', [cd['to']])
 
-            sent=True
+            sent = True
     else:
         # this is when form is to be displayed (on GET)
-        form=EmailPostForm()
+        form = EmailPostForm()
 
     return render(request, 'blog/post/share.html', {'form': form,
                                                     'post': post,
