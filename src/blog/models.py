@@ -55,6 +55,7 @@ class Post(models.Model):
         # url is set to be:
         # url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/(?P<slug>[-\w]+)/$',
         #          views.post_detail, name='post_detail')
+        # under the 'blog' namespace
         # so to reverse it we have to set 4 parameters
         return reverse('blog:post_detail', args=[self.published.year,
                                                  self.published.strftime('%m'),
@@ -71,7 +72,7 @@ class Comment(models.Model):
     # if don't name it Django will implicitly set it to: 'comment_set', so
     # post.comment_set.all()
     # 2. related_query_name 'comment' means we can use it in filter fields like so
-    # Post.objects.filter(comment__active=True)
+    # Post.objects.filter(comment__active=True). If not set it uses the 'related_name'
     post = models.ForeignKey(Post, related_name='comments',
                              related_query_name='comment')
     name = models.CharField(max_length=80)

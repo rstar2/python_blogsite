@@ -1,11 +1,13 @@
 {% extends "../_layout.html" %}
 
+{% load blog_tags %}
+
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
     <h1>{{ post.title }}</h1>
     <p class="date">Published {{ post.published }} by {{ post.author }}</p>
-    {{ post.body|linebreaks }}
+    {{ post.body|markdown }}
 
     {% include "./_tags.html" with tags=post.tags.all %}
 

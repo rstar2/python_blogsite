@@ -1,5 +1,7 @@
 {% extends "../_layout.html" %}
 
+{% load blog_tags %}
+
 {% block title %}Posts{% endblock %}
 
 {% block content %}
@@ -14,7 +16,7 @@
 
         <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
         <p class="date">Published {{ post.published }} by {{ post.author }}</p>
-        {{ post.body|truncatewords:30|linebreaks }}
+        {{ post.body|markdown|truncatewords_html:30 }}
 
         {% include "./_tags.html" with tags=post.tags.all %}
 

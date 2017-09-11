@@ -130,10 +130,11 @@ STATIC_URL = '/static/'
 
 # In addition to using a static/ directory inside your apps,
 # you can define a list of directories (STATICFILES_DIRS)
-# where Django will also look for static files. 
+# where Django will also look for static files.
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
 # in this folder will be collected all static files
 # when "$ python manage.py collectstatic" script is run
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
