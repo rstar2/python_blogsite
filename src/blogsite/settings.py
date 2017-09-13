@@ -38,12 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Needed for the sitemap generation
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+
     # Django-taggit app
     'taggit',
 
     # Our local django-app
     'blog',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

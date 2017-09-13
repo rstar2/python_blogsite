@@ -26,7 +26,9 @@ def show_latest_posts(count=5):
 
 # register an assignment tag - used in a template with
 # {% get_most_commented_posts 3 as mc_posts %}
-@register.assignment_tag
+# Since Django 1.9 simple-tags can be used as assignment-tags,
+# e.g. to store their return value - so no need anymore for '@register.assignment_tag'
+@register.simple_tag
 def get_most_commented_posts(count=5):
     return Post.status_published.annotate(total_comments=Count('comment')). \
         order_by('-total_comments')[:count]
