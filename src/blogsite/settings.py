@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     # Django-taggit app
     'taggit',
 
+    # Django-haystack app (configured with Solr)
+    'haystack',
+
     # Our local django-app
     'blog',
 ]
@@ -150,3 +153,10 @@ EMAIL_HOST_USER = 'neshev.rumen@gmail.com'
 EMAIL_HOST_PASSWORD = 'cadb12'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/blog'
+    }
+}
