@@ -12,5 +12,9 @@ urlpatterns = [
 
     # we'll use the same 'views.post_list' but with additional "tag_slug" argument
     url(r'^tag/(?P<tag_slug>\w+)$', views.post_list, name="post_list_by_tag"),
+    
+    # an example using a view class
     url(r'^feed/$', LatestPostsFeed(), name="post_feed"),
+
+    url(r'^search/$', views.post_search, name="post_search"),
 ]

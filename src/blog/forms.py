@@ -19,3 +19,8 @@ class CommentForm(forms.ModelForm):
         model = Comment
         # specify which fields to use only - if not specified will use all
         fields = ('name', 'email', 'body')
+
+
+# a form for the search fuctionality
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=250)
