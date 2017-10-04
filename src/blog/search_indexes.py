@@ -1,9 +1,9 @@
 from haystack import indexes
-from ..models import Post
+from .models import Post
 
 
 # Step 1 - in settings.py add 'haystack' as installed app and configure it for Solr for instance
-# Step 2 - create a search_index.py - named like this by convention to allow Haystack
+# Step 2 - create a search_indexes.py - named like this by convention to allow Haystack
 #          to automatically pick it up. In it put all Models that need to be indexed
 # Step 3 - for the Post model create PostIndex(indexes.SearchIndex, indexes.Indexable) class
 #          that defines 'get_model' method
